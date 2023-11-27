@@ -2,8 +2,13 @@
 const {Router} = require('express')
 const router = Router();
 const authMiddleware = require('../controllers/authMiddleware');
+const multer = require('multer');
+
+const storage = multer.memoryStorage(); // o utiliza el almacenamiento en disco si lo prefieres
+const upload = multer({ storage: storage });
 const {getUsersCliente,crearUsersCliente,eliminarUsersCliente,actualizarUserCliente,loginUser,getUsuario,crearUsuario,actualizarUsuario,eliminarUsuario,
-    getProveedor,crearProveedor,eliminarProveedor,actualizarProveedor} = require('../controllers/index.controller')
+    getProveedor,crearProveedor,eliminarProveedor,actualizarProveedor,cargarProductos,eliminarProducto,getProducto,
+    actualizarProducto} = require('../controllers/index.controller')
 router.post('/login',loginUser);
 
 //router.use(authMiddleware); // Middleware de autenticación para las rutas siguientes
@@ -21,4 +26,9 @@ router.post('/crearProveedor',crearProveedor);
 router.delete('/eliminarProveedor/:nit_proveedor',eliminarProveedor);
 router.put('/actualizarProveedor/:nit_proveedor',actualizarProveedor);
 
-module.exports = router;
+router.post('/cargarProductos', upload.single('archivoNombre'), cargarProductos);
+
+router.get('/producto',getProducto);
+router.delete('/eliminarProducto/:codigo_producto',eliminarProducto);
+router.put('/actualizarProducto/:codigo_producto',actualizarProducto);
+module.exports = router;    
